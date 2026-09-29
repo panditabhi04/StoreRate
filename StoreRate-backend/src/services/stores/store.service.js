@@ -1,18 +1,11 @@
 import DbConnection from "../../config/db.js";
 
-
-// ==========================================
-// ADD STORE
-// ==========================================
-
 export const createStoreService = async ({
     name,
     email,
     address,
     owner_id
 }) => {
-
-    // Check whether owner exists
     const [owner] = await DbConnection.execute(
         `SELECT id, role
          FROM users
@@ -26,7 +19,6 @@ export const createStoreService = async ({
         throw error;
     }
 
-    // Check owner role
     if (owner[0].role !== "OWNER") {
         const error = new Error(
             "Selected user is not a store owner"
@@ -35,7 +27,6 @@ export const createStoreService = async ({
         throw error;
     }
 
-    // Insert store
     const [result] = await DbConnection.execute(
         `INSERT INTO stores
         (name, email, address, owner_id)
@@ -56,11 +47,6 @@ export const createStoreService = async ({
         owner_id
     };
 };
-
-
-// ==========================================
-// GET ALL STORES
-// ==========================================
 
 export const getStoresService = async () => {
 
@@ -98,11 +84,6 @@ export const getStoresService = async () => {
 
     return stores;
 };
-
-
-// ==========================================
-// GET STORE BY ID
-// ==========================================
 
 export const getStoreByIdService = async (id) => {
 
@@ -148,11 +129,6 @@ export const getStoreByIdService = async (id) => {
     return stores[0];
 };
 
-
-// ==========================================
-// UPDATE STORE
-// ==========================================
-
 export const updateStoreService = async (id, data) => {
 
     const {
@@ -174,7 +150,6 @@ export const updateStoreService = async (id, data) => {
         throw error;
     }
 
-    // If owner_id is provided, validate owner
     if (owner_id !== undefined) {
 
         const [owner] = await DbConnection.execute(
@@ -200,7 +175,6 @@ export const updateStoreService = async (id, data) => {
         }
     }
 
-    // Build dynamic update
     const fields = [];
     const values = [];
 
@@ -245,11 +219,6 @@ export const updateStoreService = async (id, data) => {
     return getStoreByIdService(id);
 };
 
-
-// ==========================================
-// DELETE STORE
-// ==========================================
-
 export const deleteStoreService = async (id) => {
 
     const [existingStore] = await DbConnection.execute(
@@ -273,10 +242,6 @@ export const deleteStoreService = async (id) => {
         message: "Store deleted successfully"
     };
 };
-
-// ==========================================
-// Serach Store
-// ==========================================
 
 export const searchStoresService = async ({ name, address }) => {
 
@@ -356,8 +321,6 @@ export const submitRatingService = async (
         throw error;
     }
 
-
-    // Check whether user already submitted rating
     const [existingRating] = await DbConnection.execute(
         `
         SELECT id, rating
@@ -369,17 +332,13 @@ export const submitRatingService = async (
     );
 
     if (existingRating.length > 0) {
-
         const error = new Error(
             "You have already submitted a rating for this store"
         );
-
         error.statusCode = 409;
         throw error;
     }
 
-
-    // Insert rating
     const [result] = await DbConnection.execute(
         `
         INSERT INTO ratings
@@ -397,7 +356,6 @@ export const submitRatingService = async (
         ]
     );
 
-
     return {
         id: result.insertId,
         user_id: userId,
@@ -411,8 +369,6 @@ export const updateRatingService = async (
     storeId,
     rating
 ) => {
-
-    // Validate rating
     if (!Number.isInteger(Number(rating)) || rating < 1 || rating > 5) {
 
         const error = new Error(
@@ -423,8 +379,6 @@ export const updateRatingService = async (
         throw error;
     }
 
-
-    // 1. Direct check: Is 'storeId' a Rating ID (e.g. Rating #14 in ratings table)?
     const [ratingById] = await DbConnection.execute(
         `
         SELECT id, user_id, store_id, rating
@@ -435,7 +389,6 @@ export const updateRatingService = async (
     );
 
     if (ratingById.length > 0) {
-        // Direct rating ID matched! Update this rating record
         await DbConnection.execute(
             `
             UPDATE ratings
@@ -456,7 +409,6 @@ export const updateRatingService = async (
         };
     }
 
-    // 2. Check if user already submitted a rating for this store_id
     const [existingRating] = await DbConnection.execute(
         `
         SELECT id, store_id, rating
@@ -489,7 +441,6 @@ export const updateRatingService = async (
         };
     }
 
-    // 3. Upsert: If not rated yet, check if store exists and automatically create rating
     const [stores] = await DbConnection.execute(
         `
         SELECT id, owner_id
@@ -526,11 +477,6 @@ export const updateRatingService = async (
     error.statusCode = 404;
     throw error;
 };
-
-// ==========================================
-// GET OWNER'S OWN STORES (STORE OWNER ONLY)
-// Store owner can see ONLY their store, not other stores
-// ==========================================
 
 export const getOwnerStoresService = async (ownerId) => {
     const [stores] = await DbConnection.execute(

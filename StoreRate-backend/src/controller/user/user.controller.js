@@ -11,14 +11,10 @@ import {
 } from "../../validator/user.validator.js";
 
 export const createUser = async (req, res) => {
-
     try {
         console.log("REQ BODY:", req.body);
-        console.log("--------------validation iiiii --------------------");
-
         const validation = createUserSchema.safeParse(req.body);
         console.log("validation : ", validation);
-
         if (!validation.success) {
             return res.status(400).json({
                 success: false,
@@ -82,11 +78,8 @@ export const getUsers = async (req, res) => {
 };
 
 export const getUserById = async (req, res) => {
-
     try {
-
         const userId = Number(req.params.id);
-
         if (!Number.isInteger(userId) || userId <= 0) {
             return res.status(400).json({
                 success: false,
@@ -102,9 +95,7 @@ export const getUserById = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error("Get User By ID Error:", error);
-
         return res.status(error.statusCode || 500).json({
             success: false,
             message: error.message || "Internal server error"
@@ -113,7 +104,6 @@ export const getUserById = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-
     try {
 
         const userId = Number(req.params.id);

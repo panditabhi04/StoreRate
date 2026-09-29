@@ -36,7 +36,6 @@ export const createAdminSchema = z.object({
         .optional()
         .default("ADMIN")
 });
-
 export const updateAdminSchema = z.object({
     name: z
         .string()

@@ -17,7 +17,6 @@ router.get(
     getDashboard
 );
 
-// Owner Dashboard
 router.get(
     "/owner",
     authMiddleware,
