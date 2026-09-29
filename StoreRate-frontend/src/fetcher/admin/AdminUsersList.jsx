@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAdminUsers, fetchStores, clearAdminStatus } from '../../redux/adminSlice';
+import { API_BASE_URL } from '../../config/api';
 import {
   Shield,
   ShieldCheck,
@@ -49,7 +50,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
     setTimeout(() => setCopiedEmail(null), 2000);
   };
 
-  // Filter admin users by name, email, address, and role
   const filteredAdmins = (adminUsers || []).filter((admin) => {
     const name = (admin.name || '').toLowerCase();
     const email = (admin.email || '').toLowerCase();
@@ -94,7 +94,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -132,7 +131,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
         </div>
       </div>
 
-      {/* 2. Error Banner */}
       {adminUsersError && (
         <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-2.5">
@@ -151,9 +149,7 @@ export default function AdminUsersPage({ onAddAdminUser }) {
         </div>
       )}
 
-      {/* 3. Search & Filter Bar */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
-        {/* Search Input */}
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -164,8 +160,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
             className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:bg-white text-slate-800 placeholder-slate-400 transition-colors"
           />
         </div>
-
-        {/* Filter Pills & Stats */}
         <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto">
           <div className="flex items-center gap-1.5 overflow-x-auto">
             <button
@@ -194,7 +188,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
         </div>
       </div>
 
-      {/* 4. Table Format Listing */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
@@ -254,7 +247,7 @@ export default function AdminUsersPage({ onAddAdminUser }) {
                       <p className="text-xs text-slate-500 mb-5 leading-relaxed">
                         {search
                           ? `No admin accounts match "${search}". Try clearing your search query.`
-                          : 'Create your first administrator account using the API endpoint http://localhost:3000/api/admin.'}
+                          : `Create your first administrator account using the API endpoint ${API_BASE_URL}/admin.`}
                       </p>
                       {search ? (
                         <button
@@ -276,7 +269,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
                   </td>
                 </tr>
               ) : (
-                /* Populated Rows */
                 filteredAdmins.map((admin, idx) => {
                   const roleName = admin.role || 'ADMIN';
                   const initials = getInitials(admin.name);
@@ -287,7 +279,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
                       key={admin.id || admin._id || admin.email || idx}
                       className="hover:bg-slate-50/70 transition-colors group"
                     >
-                      {/* Name & Avatar */}
                       <td className="py-3.5 px-4 sm:px-6">
                         <div className="flex items-center gap-3">
                           <div className="relative">
@@ -307,8 +298,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
                           </div>
                         </div>
                       </td>
-
-                      {/* Email */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-1.5">
                           <a
@@ -332,8 +321,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
                           </button>
                         </div>
                       </td>
-
-                      {/* Address */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-1.5 text-slate-600">
                           <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -342,8 +329,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
                           </span>
                         </div>
                       </td>
-
-                      {/* Role & Store Owner Rating */}
                       <td className="py-3.5 px-4">
                         {(() => {
                           const userStores = (reduxStores || []).filter(
@@ -384,16 +369,12 @@ export default function AdminUsersPage({ onAddAdminUser }) {
                           );
                         })()}
                       </td>
-
-                      {/* Joined / Created */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-1.5 text-slate-500 text-xs">
                           <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span>{formatDate(admin.createdAt || admin.created_at)}</span>
                         </div>
                       </td>
-
-                      {/* Actions */}
                       <td className="py-3.5 px-4 sm:px-6 text-right">
                         <button
                           onClick={() => setSelectedAdmin(admin)}
@@ -410,8 +391,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
             </tbody>
           </table>
         </div>
-
-        {/* Footer info banner */}
         <div className="p-3 bg-slate-50 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
@@ -422,8 +401,6 @@ export default function AdminUsersPage({ onAddAdminUser }) {
           </div>
         </div>
       </div>
-
-      {/* Admin Details Modal */}
       {selectedAdmin && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative animate-in zoom-in-95">

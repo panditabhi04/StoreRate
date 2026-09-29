@@ -36,10 +36,6 @@ export default function AddNormalUserModal({ isOpen, onClose, onUserAdded }) {
       setValidationError('Passwords do not match.');
       return;
     }
-
-    // Payload matching user request:
-    // { "name": "Raj Tople", "email": "rajt@gmail.com", "address":"Pune , Maharashtra", "password": "Password@123", "role": "USER" }
-    // Rule: "not take inpout fild for role"
     const payload = {
       name: formData.name.trim(),
       email: formData.email.trim(),

@@ -1,9 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
-  import.meta.env.VITE_API_BASE_URL ||
-  'http://localhost:3000/api';
+import { API_BASE_URL } from '../config/api';
 
 // Helper to get auth headers
 const getAuthHeaders = (getState) => {
@@ -22,9 +18,6 @@ const getAuthHeaders = (getState) => {
   return headers;
 };
 
-// 1. Async Thunk: Add New Store
-// Target URL: http://localhost:3000/api/stores
-// Body: { name, email, address, owner_id }
 export const addStore = createAsyncThunk(
   'admin/addStore',
   async (storeData, { getState, rejectWithValue }) => {
@@ -65,9 +58,6 @@ export const addStore = createAsyncThunk(
   }
 );
 
-// 2. Async Thunk: Add Normal User
-// Target URL: http://localhost:3000/api/auth/register
-// Body: { name, email, address, password, role: "USER" } (role is fixed to "USER")
 export const addNormalUser = createAsyncThunk(
   'admin/addNormalUser',
   async (userData, { getState, rejectWithValue }) => {
@@ -77,7 +67,7 @@ export const addNormalUser = createAsyncThunk(
         email: userData.email.trim(),
         address: userData.address.trim(),
         password: userData.password,
-        role: 'USER', // Fixed role as instructed: "not take inpout fild for role"
+        role: 'USER',
       };
 
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -101,9 +91,6 @@ export const addNormalUser = createAsyncThunk(
   }
 );
 
-// 3. Async Thunk: Add Admin User
-// Target URL: http://localhost:3000/api/admin
-// Body: { name, email, password, address }
 export const addAdminUser = createAsyncThunk(
   'admin/addAdminUser',
   async (adminData, { getState, rejectWithValue }) => {
@@ -136,8 +123,6 @@ export const addAdminUser = createAsyncThunk(
   }
 );
 
-// 4. Async Thunk: Fetch Stores List
-// Target URL: http://localhost:3000/api/stores
 export const fetchStores = createAsyncThunk(
   'admin/fetchStores',
   async (_, { getState, rejectWithValue }) => {
@@ -172,12 +157,11 @@ export const fetchStores = createAsyncThunk(
   }
 );
 
-// 5. Async Thunk: Fetch Users List (Target: http://localhost:3000/api/new-user)
+
 export const fetchUsers = createAsyncThunk(
   'admin/fetchUsers',
   async (_, { getState, rejectWithValue }) => {
     try {
-      // Primary URL as specified: http://localhost:3000/api/new-user
       const response = await fetch(`${API_BASE_URL}/new-user`, {
         method: 'GET',
         headers: getAuthHeaders(getState),
@@ -206,7 +190,7 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
-// 6. Async Thunk: Fetch Admin Users List (GET http://localhost:3000/api/admin)
+
 export const fetchAdminUsers = createAsyncThunk(
   'admin/fetchAdminUsers',
   async (_, { getState, rejectWithValue }) => {
@@ -304,7 +288,7 @@ const adminSlice = createSlice({
         state.error = action.payload || 'Failed to add normal user';
       });
 
-    // Add Admin User (POST http://localhost:3000/api/admin)
+   
     builder
       .addCase(addAdminUser.pending, (state) => {
         state.isSubmitting = true;
@@ -358,7 +342,7 @@ const adminSlice = createSlice({
         state.isLoadingUsers = false;
       });
 
-    // Fetch Admin Users (GET http://localhost:3000/api/admin)
+    // Fetch Admin Users (GET /api/admin)
     builder
       .addCase(fetchAdminUsers.pending, (state) => {
         state.isLoadingAdminUsers = true;

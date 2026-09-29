@@ -1,12 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { API_BASE_URL } from '../config/api';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
-  import.meta.env.VITE_API_BASE_URL ||
-  'http://localhost:3000/api';
-
-// 1. Async Thunk: Fetch Admin Dashboard Statistics
-// Target endpoint: http://localhost:3000/api/dashboard
 export const fetchDashboardStats = createAsyncThunk(
   'dashboard/fetchStats',
   async (_, { getState, rejectWithValue }) => {
@@ -48,21 +42,6 @@ export const fetchDashboardStats = createAsyncThunk(
   }
 );
 
-// 2. Async Thunk: Fetch Store Owner Dashboard
-// Target endpoint: http://localhost:3000/api/dashboard/owner
-// Response format:
-// {
-//     "success": true,
-//     "message": "Owner dashboard fetched successfully",
-//     "data": {
-//         "store": { "id": 17, "name": "Bigmart Super Market" },
-//         "average_rating": "5.00",
-//         "users": [
-//             { "user_id": 29, "user_name": "Shweta Pandit User", "email": "...", "rating": 5, "created_at": "..." },
-//             { "user_id": 22, "user_name": "Raj Tabhekar", "email": "...", "rating": 5, "created_at": "..." }
-//         ]
-//     }
-// }
 export const fetchOwnerDashboard = createAsyncThunk(
   'dashboard/fetchOwnerDashboard',
   async (_, { getState, rejectWithValue }) => {
@@ -165,7 +144,6 @@ const dashboardSlice = createSlice({
         state.error = action.payload || 'Failed to load dashboard statistics';
       });
 
-    // Store Owner Dashboard (http://localhost:3000/api/dashboard/owner)
     builder
       .addCase(fetchOwnerDashboard.pending, (state) => {
         state.isLoadingOwner = true;

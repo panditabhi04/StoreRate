@@ -27,9 +27,6 @@ export default function AddAdminUserModal({ isOpen, onClose, onAdminAdded }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Payload matching user request:
-    // { "name": "Super Admin User", "email": "newadmin@storerate.com", "password": "AdminPassword@123", "address": "Pune, Maharashtra" }
     const payload = {
       name: formData.name.trim(),
       email: formData.email.trim(),
@@ -102,7 +99,6 @@ export default function AddAdminUserModal({ isOpen, onClose, onAdminAdded }) {
               />
             </div>
           </div>
-
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               Admin Email <span className="text-rose-500">*</span>

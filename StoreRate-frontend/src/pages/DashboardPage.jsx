@@ -19,8 +19,6 @@ export default function DashboardPage({
   onOpenAddAdminUser
 }) {
   const dispatch = useDispatch();
-
-  // 1. Get logged in user from Redux auth state (with fallback to localStorage)
   const authUser = useSelector((state) => state.auth?.user) || (() => {
     try {
       const u = localStorage.getItem('user') || localStorage.getItem('userdata');
@@ -37,14 +35,10 @@ export default function DashboardPage({
     userRole === 'OWNER' ||
     userRole.includes('OWNER') ||
     !!authUser?.is_owner;
+  const [adminViewMode, setAdminViewMode] = React.useState('system'); 
 
-  // View mode for Admin (allows admin to toggle between System Stats and Owner Portal)
-  const [adminViewMode, setAdminViewMode] = React.useState('system'); // 'system' | 'owner'
-
-  // 2. Read live dashboard metrics from Redux dashboardSlice
   const { stats, isLoading, error } = useSelector((state) => state.dashboard);
 
-  // 3. Dispatch Redux asyncThunk to fetch http://localhost:3000/api/dashboard for admin
   useEffect(() => {
     if (isAdmin) {
       dispatch(fetchDashboardStats());
@@ -55,12 +49,9 @@ export default function DashboardPage({
     dispatch(fetchDashboardStats());
   };
 
-  // If user is a Store Owner (and not an Admin), immediately render the Store Owner Dashboard
   if (isStoreOwner && !isAdmin) {
     return <OwnerDashboard onNavigate={onNavigate} />;
   }
-
-  // Guard: If user is neither an Admin nor a Store Owner (standard normal user)
   if (!isAdmin && !isStoreOwner) {
     return (
       <div className="flex flex-col items-center justify-center p-8 sm:p-12 bg-white rounded-3xl border border-slate-200 shadow-xs text-center max-w-xl mx-auto my-8">
@@ -87,7 +78,6 @@ export default function DashboardPage({
       </div>
     );
   }
-
   // If Admin toggles to Owner Dashboard view
   if (isAdmin && adminViewMode === 'owner') {
     return (
@@ -107,8 +97,6 @@ export default function DashboardPage({
       </div>
     );
   }
-
-  // The 3 Requested Metric Cards driven by Redux state
   const cards = [
     {
       title: 'Total Users',
@@ -182,8 +170,6 @@ export default function DashboardPage({
           </button>
         </div>
       )}
-
-      {/* The 3 Admin Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {cards.map((card, i) => {
           const Icon = card.icon;
@@ -226,7 +212,6 @@ export default function DashboardPage({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* 1. Add New Store Card */}
           <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
             <div>
               <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
@@ -255,8 +240,6 @@ export default function DashboardPage({
               )}
             </div>
           </div>
-
-          {/* 2. Add Normal User Card */}
           <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
             <div>
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
@@ -285,8 +268,6 @@ export default function DashboardPage({
               )}
             </div>
           </div>
-
-          {/* 3. Add Admin User Card */}
           <div className="bg-white rounded-2xl border border-indigo-200/80 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden bg-gradient-to-b from-indigo-50/40 to-white">
             <span className="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200 uppercase">
               System Admin

@@ -59,7 +59,6 @@ function App() {
     setAuthMode('login');
   };
 
-  // 1. If user is NOT logged in: Show Login or Registration page
   if (!isAuthenticated) {
     if (authMode === 'register') {
       return (
@@ -76,7 +75,6 @@ function App() {
     );
   }
 
-  // 2. Once logged in: Show the main application & features
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -131,29 +129,21 @@ function App() {
       onOpenUpdatePassword={() => setIsUpdatePasswordOpen(true)}
     >
       {renderContent()}
-
-      {/* 1. Modal: Add New Store */}
       <AddStoreModal
         isOpen={isAddStoreOpen}
         onClose={() => setIsAddStoreOpen(false)}
         onStoreAdded={() => setActiveTab('stores')}
       />
-
-      {/* 2. Modal: Add Normal User */}
       <AddNormalUserModal
         isOpen={isAddNormalUserOpen}
         onClose={() => setIsAddNormalUserOpen(false)}
         onUserAdded={() => setActiveTab('users')}
       />
-
-      {/* 3. Modal: Add Admin User (POST http://localhost:3000/api/admin) */}
       <AddAdminUserModal
         isOpen={isAddAdminUserOpen}
         onClose={() => setIsAddAdminUserOpen(false)}
         onAdminAdded={() => setActiveTab('admin-users')}
       />
-
-      {/* 4. Modal: Update Password (STRICTLY for Normal Users: role === 'USER') */}
       {!isAdmin && (
         <UpdatePasswordModal
           isOpen={isUpdatePasswordOpen}

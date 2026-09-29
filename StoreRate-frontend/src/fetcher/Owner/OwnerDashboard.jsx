@@ -28,8 +28,6 @@ import {
 
 export default function OwnerDashboard({ onNavigate }) {
   const dispatch = useDispatch();
-
-  // 1. Redux auth and dashboard state
   const authUser = useSelector((state) => state.auth?.user) || (() => {
     try {
       const u = localStorage.getItem('user') || localStorage.getItem('userdata');
@@ -43,13 +41,11 @@ export default function OwnerDashboard({ onNavigate }) {
     (state) => state.dashboard
   );
 
-  // Local UI state for search, filters, and copying
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStarFilter, setSelectedStarFilter] = useState('ALL'); // 'ALL' | 5 | 4 | 3 | 2 | 1
-  const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'oldest' | 'highest' | 'lowest' | 'name'
+  const [selectedStarFilter, setSelectedStarFilter] = useState('ALL'); 
+  const [sortBy, setSortBy] = useState('newest'); 
   const [copiedEmail, setCopiedEmail] = useState(null);
 
-  // 2. Fetch owner dashboard on mount
   useEffect(() => {
     dispatch(fetchOwnerDashboard());
   }, [dispatch]);
@@ -74,7 +70,6 @@ export default function OwnerDashboard({ onNavigate }) {
     : averageRatingNum.toFixed(2);
   const users = Array.isArray(ownerData?.users) ? ownerData.users : [];
 
-  // 3. Compute rating statistics and distributions
   const stats = useMemo(() => {
     const totalUsers = users.length;
     if (totalUsers === 0) {
@@ -149,13 +144,11 @@ export default function OwnerDashboard({ onNavigate }) {
       );
     }
 
-    // Star filter
     if (selectedStarFilter !== 'ALL') {
       const filterRating = Number(selectedStarFilter);
       list = list.filter((u) => Number(u.rating) === filterRating);
     }
 
-    // Sort
     list.sort((a, b) => {
       if (sortBy === 'newest') {
         return new Date(b.created_at || 0) - new Date(a.created_at || 0);
@@ -178,7 +171,6 @@ export default function OwnerDashboard({ onNavigate }) {
     return list;
   }, [users, searchTerm, selectedStarFilter, sortBy]);
 
-  // Render Star Rating Icon row (1 to 5)
   const renderStarIcons = (ratingValue, max = 5, sizeClass = 'w-4 h-4') => {
     const stars = [];
     const val = Number(ratingValue) || 0;
@@ -200,7 +192,6 @@ export default function OwnerDashboard({ onNavigate }) {
     return <div className="flex items-center gap-0.5">{stars}</div>;
   };
 
-  // Helper to format date cleanly
   const formatDate = (isoString) => {
     if (!isoString) return 'N/A';
     try {
@@ -285,11 +276,6 @@ export default function OwnerDashboard({ onNavigate }) {
           </button>
         </div>
       )}
-
-      {/* ================= HERO PERFORMANCE & RATING BANNER ================= */}
-
-
-      {/* ================= 3 SUMMARY METRIC CARDS ================= */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {/* Card 1: Average Rating */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
@@ -313,7 +299,6 @@ export default function OwnerDashboard({ onNavigate }) {
           </div>
         </div>
 
-        {/* Card 2: Total Customers Rated */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
@@ -334,7 +319,6 @@ export default function OwnerDashboard({ onNavigate }) {
           </p>
         </div>
 
-        {/* Card 3: 5-Star Reviews */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
@@ -357,12 +341,7 @@ export default function OwnerDashboard({ onNavigate }) {
           </p>
         </div>
       </div>
-
-
-
-      {/* ================= USERS WHO SUBMITTED RATINGS LIST ================= */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        {/* Table Header & Search/Filter Controls */}
         <div className="p-5 sm:p-6 border-b border-slate-100 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
@@ -432,8 +411,6 @@ export default function OwnerDashboard({ onNavigate }) {
             </div>
           </div>
         </div>
-
-        {/* Content: Loading Skeleton, Empty State, or User Table */}
         {isLoadingOwner && users.length === 0 ? (
           <div className="p-8 space-y-4">
             {[1, 2, 3].map((n) => (

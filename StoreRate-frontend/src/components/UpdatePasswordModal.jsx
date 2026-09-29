@@ -36,7 +36,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [clientError, setClientError] = useState('');
 
-  // Check role: Normal users (role: 'USER') and Store Owners can update their password
   const userRole = (authUser?.role || '').trim().toUpperCase();
   const isAdmin = userRole === 'ADMIN';
   const isAllowedToUpdate = !isAdmin;
@@ -60,8 +59,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  // Validation rules per StoreRate specification:
-  // Password: 8 to 16 characters, at least one uppercase letter and one special character
   const isLengthValid = formData.newPassword.length >= 8 && formData.newPassword.length <= 16;
   const hasUpperCase = /[A-Z]/.test(formData.newPassword);
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>_~`\-+=\[\]\\;/]/.test(formData.newPassword);
@@ -91,7 +88,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
     e.preventDefault();
     setClientError('');
 
-    // Authorization check: Normal users and store owners are permitted
     if (!isAllowedToUpdate) {
       setClientError('Access restricted: Administrator accounts cannot update passwords through this modal.');
       return;
@@ -146,7 +142,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in">
       <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 relative animate-in zoom-in-95">
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
@@ -155,7 +150,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
           <X className="w-5 h-5" />
         </button>
 
-        {/* Header */}
         <div className="flex items-center gap-3 mb-5">
           <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-xs">
             <KeyRound className="w-6 h-6" />
@@ -173,7 +167,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
           </div>
         </div>
 
-        {/* Warning if current logged in user is NOT allowed (e.g. Admin) */}
         {!isAllowedToUpdate ? (
           <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs space-y-2 mb-4">
             <div className="flex items-center gap-2 font-semibold">
@@ -193,7 +186,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
           </div>
         ) : (
           <>
-            {/* Error Notifications */}
             {(clientError || passwordUpdateError) && (
               <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2.5 animate-in slide-in-from-top-1">
                 <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
@@ -203,8 +195,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
                 </div>
               </div>
             )}
-
-            {/* Success Notification */}
             {passwordUpdateSuccess && (
               <div className="mb-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-start gap-2.5 animate-in slide-in-from-top-1">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
@@ -216,7 +206,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-3.5">
-              {/* Current Password Field */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Current Password <span className="text-rose-500">*</span>
@@ -242,8 +231,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
                   </button>
                 </div>
               </div>
-
-              {/* New Password Field */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   New Password <span className="text-rose-500">*</span>
@@ -275,8 +262,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
                   </button>
                 </div>
               </div>
-
-              {/* Confirm New Password Field */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Confirm New Password <span className="text-rose-500">*</span>
@@ -376,8 +361,6 @@ export default function UpdatePasswordModal({ isOpen, onClose }) {
                   </div>
                 </div>
               </div>
-
-              {/* Action Buttons */}
               <div className="flex gap-3 pt-3">
                 <button
                   type="button"

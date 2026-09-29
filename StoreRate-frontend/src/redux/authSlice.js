@@ -1,10 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-// Retrieve API Base URL from .env
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
-  import.meta.env.VITE_API_BASE_URL ||
-  'http://localhost:3000/api';
+import { API_BASE_URL } from '../config/api';
 
 // Helper to save authentication session to localStorage
 const saveAuthToStorage = (token, user, data) => {
@@ -32,9 +27,7 @@ const clearAuthFromStorage = () => {
   localStorage.removeItem('storerate_user');
 };
 
-// Async Thunk: Register User
-// Target endpoint: http://localhost:3000/api/auth/register
-// Body: { name, email, address, password, role }
+
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData, { rejectWithValue }) => {
@@ -91,12 +84,9 @@ export const loginUser = createAsyncThunk(
         );
       }
 
-      // Extract token and user from response (handles both res.data.token and res.token)
+    
       const token = res.data?.token || res.token;
       const user = res.data?.user || res.user;
-
-      // Store in localStorage as requested:
-      // localStorage.token and localStorage.user / localStorage.userdata
       saveAuthToStorage(token, user, res.data);
 
       return res;
@@ -108,8 +98,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Async Thunk: Update Password (ONLY for Normal User: role === 'USER')
-// Per specification: "only normal user Can update their password after logging in."
+
 export const updateUserPassword = createAsyncThunk(
   'auth/updateUserPassword',
   async ({ currentPassword, newPassword, confirmPassword }, { getState, rejectWithValue }) => {
@@ -238,8 +227,6 @@ export const updateUserPassword = createAsyncThunk(
               headers,
               body: JSON.stringify(payload),
             });
-
-            // If 404 or 405, route does not exist with this method, skip to next route
             if (response.status === 404 || response.status === 405) {
               break;
             }
@@ -280,7 +267,6 @@ export const updateUserPassword = createAsyncThunk(
               continue;
             }
 
-            // Definite error from backend (e.g. wrong current password or validation error)
             return rejectWithValue(errMsg);
           } catch (fetchErr) {
             lastErrorMsg = fetchErr.message;
@@ -289,7 +275,6 @@ export const updateUserPassword = createAsyncThunk(
       }
 
       if (!matchedRoute) {
-        // Fallback for demo/offline environment if backend route not registered yet
         return 'Password updated successfully! (Local session updated)';
       }
 
@@ -368,7 +353,6 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // --- Register User Lifecycle ---
     builder
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
@@ -392,8 +376,6 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || 'Registration failed';
       });
-
-    // --- Login User Lifecycle ---
     builder
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
@@ -415,8 +397,6 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || 'Login failed';
       });
-
-    // --- Update Password Lifecycle (Normal User ONLY) ---
     builder
       .addCase(updateUserPassword.pending, (state) => {
         state.isUpdatingPassword = true;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers, fetchStores } from '../../redux/adminSlice';
+import { API_BASE_URL } from '../../config/api';
 import {
   Search,
   UserPlus,
@@ -27,7 +28,6 @@ export default function UsersPage({ onAddUser }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [copiedEmail, setCopiedEmail] = useState(null);
 
-  // Fallback initial list (strictly role: "USER")
   const defaultUsers = [
     {
       id: 25,
@@ -79,8 +79,6 @@ export default function UsersPage({ onAddUser }) {
       role: 'USER'
     }
   ];
-
-  // Fetch from http://localhost:3000/api/new-user and stores
   useEffect(() => {
     dispatch(fetchUsers());
     dispatch(fetchStores());
@@ -107,13 +105,11 @@ export default function UsersPage({ onAddUser }) {
       .toUpperCase();
   };
 
-  // 1. Filter raw API list strictly to ONLY users where role === "USER"
   const rawList = Array.isArray(reduxUsers) && reduxUsers.length > 0 ? reduxUsers : defaultUsers;
   const normalOnlyUsers = rawList.filter(
     (u) => (u.role || '').trim().toUpperCase() === 'USER'
   );
 
-  // 2. Apply search filter across Name, Email, Address
   const filteredUsers = normalOnlyUsers.filter((u) => {
     const q = search.toLowerCase().trim();
     if (!q) return true;
@@ -125,7 +121,6 @@ export default function UsersPage({ onAddUser }) {
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -144,7 +139,7 @@ export default function UsersPage({ onAddUser }) {
             onClick={handleRefresh}
             disabled={isLoadingUsers}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs sm:text-sm font-semibold shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
-            title="Refresh from http://localhost:3000/api/new-user"
+            title={`Refresh from ${API_BASE_URL}/new-user`}
           >
             <RefreshCw className={`w-4 h-4 ${isLoadingUsers ? 'animate-spin text-emerald-600' : ''}`} />
             <span className="hidden sm:inline">Refresh</span>
@@ -159,8 +154,6 @@ export default function UsersPage({ onAddUser }) {
           </button>
         </div>
       </div>
-
-      {/* 2. Search & Stats Bar */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Search input */}
         <div className="relative w-full md:w-96">
@@ -186,8 +179,6 @@ export default function UsersPage({ onAddUser }) {
           </span>
         </div>
       </div>
-
-      {/* 3. Table Format (Only Role: USER) */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
@@ -202,7 +193,6 @@ export default function UsersPage({ onAddUser }) {
             </thead>
 
             <tbody className="divide-y divide-slate-100">
-              {/* Skeleton loading */}
               {isLoadingUsers && normalOnlyUsers.length === 0 ? (
                 [...Array(4)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
@@ -219,7 +209,6 @@ export default function UsersPage({ onAddUser }) {
                   </tr>
                 ))
               ) : filteredUsers.length === 0 ? (
-                /* Empty state */
                 <tr>
                   <td colSpan={5} className="py-12 px-4 text-center">
                     <div className="max-w-sm mx-auto flex flex-col items-center">
@@ -246,7 +235,6 @@ export default function UsersPage({ onAddUser }) {
                   </td>
                 </tr>
               ) : (
-                /* Populated normal users */
                 filteredUsers.map((user) => {
                   const isCopied = copiedEmail === user.email;
 
@@ -271,8 +259,6 @@ export default function UsersPage({ onAddUser }) {
                           </div>
                         </div>
                       </td>
-
-                      {/* Email */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-1.5">
                           <a

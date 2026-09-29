@@ -7,6 +7,7 @@ import {
   fetchUserRatings,
   clearRatingStatus
 } from '../redux/ratingSlice';
+import { API_BASE_URL } from '../config/api';
 import {
   Star,
   Store,
@@ -60,11 +61,7 @@ export default function RtaingList() {
       dispatch(fetchUserRatings());
     }
   }, [dispatch, isNormalUser]);
-
-  // Dynamic stores list directly from http://localhost:3000/api/stores
   const stores = Array.isArray(reduxStores) ? reduxStores : [];
-
-  // Calculate real dynamic rating statistics from API stores data
   const totalStores = stores.length;
   const storesWithRatings = stores.filter((st) => {
     const r = parseFloat(st.average_rating || st.rating || 0);
@@ -173,7 +170,6 @@ export default function RtaingList() {
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -183,7 +179,7 @@ export default function RtaingList() {
             <h2 className="text-2xl font-bold text-slate-900">Store Ratings & Metrics</h2>
           </div>
           <p className="text-xs sm:text-sm text-slate-500">
-            Live ratings fetched directly from <code className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">http://localhost:3000/api/stores</code>
+            Live ratings fetched directly from <code className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">{API_BASE_URL}/stores</code>
           </p>
         </div>
 
@@ -200,8 +196,6 @@ export default function RtaingList() {
           <span>Refresh Data</span>
         </button>
       </div>
-
-      {/* 2. Global Feedback Toast */}
       {ratingSuccess && !activeRatingModal && (
         <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between shadow-xs animate-in slide-in-from-top-2">
           <div className="flex items-center gap-2.5">
@@ -216,8 +210,6 @@ export default function RtaingList() {
           </button>
         </div>
       )}
-
-      {/* 3. Dynamic Rating Overview Banner */}
       <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
         {/* Left: Overall Platform Average Score */}
         <div className="text-center md:border-r border-slate-200/80 md:pr-6">
@@ -243,8 +235,6 @@ export default function RtaingList() {
             Computed from <strong>{totalStores}</strong> live stores ({storesWithRatings.length} rated)
           </p>
         </div>
-
-        {/* Right: Dynamic Rating Breakdown */}
         <div className="md:col-span-2 space-y-2">
           {breakdown.map((row) => (
             <div key={row.star} className="flex items-center gap-3 text-xs">
@@ -276,8 +266,6 @@ export default function RtaingList() {
           ))}
         </div>
       </div>
-
-      {/* 4. Filter & Search Controls */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Search */}
         <div className="relative w-full sm:w-80">
@@ -320,8 +308,6 @@ export default function RtaingList() {
           ))}
         </div>
       </div>
-
-      {/* 5. Dynamic Stores Rating Cards */}
       <div className="space-y-4">
         {isLoadingStores && stores.length === 0 ? (
           <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
@@ -471,8 +457,6 @@ export default function RtaingList() {
           })
         )}
       </div>
-
-      {/* 6. Rating Modal (Submit / Modify 1 to 5 Stars) */}
       {activeRatingModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 relative animate-in zoom-in-95">
@@ -517,8 +501,6 @@ export default function RtaingList() {
                 </span>
               </div>
             </div>
-
-            {/* Alerts */}
             {ratingError && (
               <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addStore, fetchStores, clearAdminStatus } from '../../redux/adminSlice';
 import { fetchDashboardStats } from '../../redux/dashboardSlice';
+import { API_BASE_URL } from '../../config/api';
 import { X, Store, Mail, MapPin, User, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function AddStoreModal({ isOpen, onClose, onStoreAdded }) {
@@ -23,12 +24,8 @@ export default function AddStoreModal({ isOpen, onClose, onStoreAdded }) {
       const token =
         localStorage.getItem('token') ||
         localStorage.getItem('storerate_token');
-      const API_BASE =
-        import.meta.env.VITE_API_URL ||
-        import.meta.env.VITE_API_BASE_URL ||
-        'http://localhost:3000/api';
 
-      fetch(`${API_BASE}/new-user`, {
+      fetch(`${API_BASE_URL}/new-user`, {
         headers: {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -63,9 +60,6 @@ export default function AddStoreModal({ isOpen, onClose, onStoreAdded }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Payload matching backend requirement:
-    // { "name": "Bigmart Super Market", "email": "Bigmart@supermarket.com", "address": "Kothrud, Pune, Maharashtra", "owner_id": 18 }
     const payload = {
       name: formData.name.trim(),
       email: formData.email.trim(),

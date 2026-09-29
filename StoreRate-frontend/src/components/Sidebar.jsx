@@ -48,10 +48,6 @@ export default function Sidebar({
     userRole === 'OWNER' ||
     userRole.includes('OWNER') ||
     !!authUser?.is_owner;
-
-  // Navigation items:
-  // When role is ADMIN: Show full management (Dashboard, Users, Stores, Admin Users, Ratings)
-  // When role is USER: Do NOT show Users, Admin Users, or Dashboard! ONLY show Stores & Ratings
   const mainNavItems = isAdmin
     ? [
       {
@@ -88,7 +84,7 @@ export default function Sidebar({
       // },
     ]
     : isStoreOwner
-    ? [
+      ? [
         {
           id: 'dashboard',
           label: 'Dashboard',
@@ -103,7 +99,7 @@ export default function Sidebar({
           badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
         },
       ]
-    : [
+      : [
         {
           id: 'stores',
           label: 'Stores',
@@ -111,51 +107,15 @@ export default function Sidebar({
           badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
         },
       ];
-
-  // Additional management & configuration items to showcase sidebar's own vertical scrolling
-  const secondaryNavItems = [
-    {
-      id: 'analytics',
-      label: 'Analytics',
-      icon: TrendingUp,
-      badge: 'New',
-      badgeColor: 'bg-purple-500/10 text-purple-400 border-purple-500/30'
-    },
-    {
-      id: 'reports',
-      label: 'Reports',
-      icon: FileText
-    },
-    {
-      id: 'notifications',
-      label: 'Alerts',
-      icon: Bell,
-      badge: '3',
-      badgeColor: 'bg-rose-500/10 text-rose-400 border-rose-500/30'
-    },
-    {
-      id: 'settings',
-      label: 'Settings',
-      icon: Settings
-    },
-    {
-      id: 'help',
-      label: 'Help & Docs',
-      icon: HelpCircle
-    }
-  ];
-
   const handleNavClick = (id) => {
     setActiveTab(id);
     if (setIsMobileOpen) {
       setIsMobileOpen(false);
     }
   };
-
   const renderNavItem = (item) => {
     const Icon = item.icon;
     const isActive = activeTab === item.id;
-
     return (
       <div key={item.id} className="relative group">
         <button
@@ -169,7 +129,6 @@ export default function Sidebar({
             className={`shrink-0 transition-transform duration-200 ${isOpen ? 'w-5 h-5' : 'w-6 h-6'
               } ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}
           />
-
           {isOpen && (
             <div className="flex items-center justify-between flex-1 min-w-0">
               <span className="truncate">{item.label}</span>
@@ -185,13 +144,10 @@ export default function Sidebar({
               )}
             </div>
           )}
-
           {isActive && !isOpen && (
             <span className="absolute left-0 top-2 bottom-2 w-1 bg-indigo-500 rounded-r-md" />
           )}
         </button>
-
-        {/* Floating Tooltip in collapsed mode */}
         {!isOpen && (
           <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-slate-950 text-white text-xs font-medium rounded-md shadow-xl border border-slate-700/80 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-50 flex items-center gap-2">
             <span>{item.label}</span>
@@ -209,7 +165,6 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Mobile Backdrop */}
       {isMobileOpen && (
         <div
           onClick={() => setIsMobileOpen(false)}
@@ -217,13 +172,10 @@ export default function Sidebar({
           aria-hidden="true"
         />
       )}
-
-      {/* Sidebar: Fixed / Static height h-screen with independent vertical scroll */}
       <aside
         className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col h-screen shrink-0 bg-slate-900 text-slate-200 border-r border-slate-800 transition-all duration-300 ease-in-out select-none shadow-2xl lg:sticky lg:top-0 lg:translate-x-0 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           } ${isOpen ? 'w-64' : 'w-20'}`}
       >
-        {/* 1. Static Brand Header (Pinned at Top) */}
         <div className="shrink-0 flex items-center justify-between h-18 px-4 border-b border-slate-800/80 bg-slate-950/60">
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="relative flex items-center justify-center shrink-0 w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-500 shadow-md shadow-indigo-500/25 group cursor-pointer">
@@ -264,8 +216,6 @@ export default function Sidebar({
             )}
           </button>
         </div>
-
-        {/* 2. Scrollable Middle Area: HAS ITS OWN INDEPENDENT VERTICAL SCROLLBAR */}
         <div className="flex-1 px-3 py-4 overflow-y-auto overflow-x-hidden space-y-4 sidebar-scrollbar">
           {/* Main Navigation Section */}
           <div className="space-y-1.5">
@@ -276,14 +226,9 @@ export default function Sidebar({
             )}
             {mainNavItems.map(renderNavItem)}
           </div>
-
-          {/* Admin Quick Add Actions (Stores, Normal Users, Admin Users) */}
-
         </div>
 
-        {/* 3. Static Bottom Section: Normal User / Store Owner Password Update + Logout */}
         <div className="shrink-0 p-3 border-t border-slate-800/80 bg-slate-950/60 space-y-1.5">
-          {/* Normal users and Store Owners can update their password */}
           {!isAdmin && onOpenUpdatePassword && (
             <div className="relative group">
               <button

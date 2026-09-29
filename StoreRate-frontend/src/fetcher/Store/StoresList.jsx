@@ -64,7 +64,6 @@ export default function StoresList({ onAddStore }) {
     }
   }, [dispatch, isNormalUser]);
 
-  // Dynamic stores list directly from http://localhost:3000/api/stores
   const allStores =
     Array.isArray(reduxStores) && reduxStores.length > 0
       ? reduxStores.map((st, i) => {
@@ -124,7 +123,6 @@ export default function StoresList({ onAddStore }) {
     return matchesRating && matchesSearch;
   });
 
-  // Open modal to submit or modify rating
   const handleOpenRatingModal = (store, isModifying, currentRating, ratingId) => {
     dispatch(clearRatingStatus());
     const initialStars = currentRating ? Number(currentRating) : 5;
@@ -149,7 +147,6 @@ export default function StoresList({ onAddStore }) {
     if (starsToSubmit < 1 || starsToSubmit > 5) return;
 
     if (isModifying) {
-      // Modify: PATCH http://localhost:3000/api/rating/:id with body { "rating": 4 }
       const res = await dispatch(
         updateRating({
           ratingId: ratingId || userRatings[store.id]?.id || 15,
@@ -165,7 +162,6 @@ export default function StoresList({ onAddStore }) {
         }, 1200);
       }
     } else {
-      // Submit new: POST http://localhost:3000/api/rating with body { "store_id": 17, "rating": 5 }
       const res = await dispatch(
         submitRating({
           store_id: store.id,
@@ -201,7 +197,6 @@ export default function StoresList({ onAddStore }) {
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -243,8 +238,6 @@ export default function StoresList({ onAddStore }) {
           )}
         </div>
       </div>
-
-      {/* 2. Global Feedback Notifications */}
       {ratingSuccess && !activeRatingModal && (
         <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between shadow-xs animate-in slide-in-from-top-2">
           <div className="flex items-center gap-2.5">
@@ -259,8 +252,6 @@ export default function StoresList({ onAddStore }) {
           </button>
         </div>
       )}
-
-      {/* 3. Search & Filter Bar */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -289,8 +280,6 @@ export default function StoresList({ onAddStore }) {
           ))}
         </div>
       </div>
-
-      {/* 4. Store Listings Grid */}
       {isLoadingStores && filteredStores.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
           <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-2" />
@@ -306,7 +295,6 @@ export default function StoresList({ onAddStore }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredStores.map((st) => {
-            // Retrieve User's Submitted Rating for this store
             const userRatingObj =
               userRatings[st.id] ||
               (st.user_rating
@@ -340,14 +328,11 @@ export default function StoresList({ onAddStore }) {
 
                 {/* Card Content Area */}
                 <div className="p-5 space-y-3.5">
-                  {/* ○ 1. Store Name & Overall Rating */}
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-1.5">
                       <h3 className="font-bold text-base text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
                         {st.name}
                       </h3>
-
-                      {/* ○ 3. Overall Rating */}
                       <div
                         className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border font-bold text-xs shrink-0 ${
                           Number(st.rating) > 0
@@ -378,20 +363,11 @@ export default function StoresList({ onAddStore }) {
                         </p>
                       )}
                     </div>
-
-                    {/* ○ 2. Address */}
                     <div className="mt-2 p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex items-start gap-2 text-xs text-slate-600">
                       <MapPin className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
                       <span className="leading-snug line-clamp-2">{st.address}</span>
                     </div>
                   </div>
-
-                  {/* ================= NORMAL USER SPECIFIC CONTROLS ================= */}
-                  {/* Per specification:
-                      ○ User's Submitted Rating
-                      ○ Option to submit a rating
-                      ○ Option to modify their submitted rating
-                      ● Can submit ratings (between 1 to 5) for individual stores */}
                   {isNormalUser && (
                     <div className="pt-3 border-t border-slate-100 space-y-2.5">
                       {/* ○ 4. User's Submitted Rating Display */}
@@ -423,8 +399,6 @@ export default function StoresList({ onAddStore }) {
                           </span>
                         )}
                       </div>
-
-                      {/* ○ 5 & 6. Option to Submit / Modify Rating */}
                       <div className="pt-1">
                         {hasUserRated ? (
                           /* Option to Modify Submitted Rating */
@@ -452,8 +426,6 @@ export default function StoresList({ onAddStore }) {
                   )}
                 </div>
               </div>
-
-              {/* Card Footer (Admin / Generic View) */}
               {!isNormalUser && (
                 <div className="p-4 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                   <span>Store ID: #{st.id}</span>
@@ -468,8 +440,6 @@ export default function StoresList({ onAddStore }) {
         })}
       </div>
     )}
-
-      {/* ================= MODAL: SUBMIT / MODIFY RATING (1 to 5 Stars) ================= */}
       {activeRatingModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 relative animate-in zoom-in-95">
@@ -540,8 +510,6 @@ export default function StoresList({ onAddStore }) {
                 <label className="block text-xs font-semibold text-slate-700 mb-2 text-center">
                   Select Rating (1 to 5 Stars) <span className="text-rose-500">*</span>
                 </label>
-
-                {/* 1 to 5 Interactive Stars Picker */}
                 <div className="flex items-center justify-center gap-2 py-3 bg-amber-50/50 rounded-2xl border border-amber-100">
                   {[1, 2, 3, 4, 5].map((star) => {
                     const isLit =
@@ -568,16 +536,12 @@ export default function StoresList({ onAddStore }) {
                     );
                   })}
                 </div>
-
-                {/* Star Description Badge */}
                 <div className="mt-2 text-center">
                   <span className="inline-block text-xs font-bold text-amber-800 bg-amber-100/70 border border-amber-200/80 px-3 py-1 rounded-full">
                     {getStarRatingLabel(hoveredStars || selectedStars)}
                   </span>
                 </div>
               </div>
-
-              {/* Current Submitted Rating Hint if modifying */}
               {activeRatingModal.isModifying && (
                 <div className="text-center text-xs text-slate-500">
                   <span>Current rating: </span>
@@ -591,8 +555,6 @@ export default function StoresList({ onAddStore }) {
                   )}
                 </div>
               )}
-
-              {/* Action Buttons */}
               <div className="flex gap-3 pt-3">
                 <button
                   type="button"

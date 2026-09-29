@@ -33,16 +33,12 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [validationError, setValidationError] = useState('');
-
-  // Clear errors when component unmounts
   useEffect(() => {
     return () => {
       dispatch(clearError());
       dispatch(clearSuccess());
     };
   }, [dispatch]);
-
-  // Handle redirect if registered successfully
   useEffect(() => {
     if (successMessage && onRegisterSuccess) {
       const timer = setTimeout(() => {
@@ -62,15 +58,10 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setValidationError('');
-
-    // Compare Password and Confirm Password
     if (formData.password !== formData.confirmPassword) {
       setValidationError('Passwords do not match. Please verify your password.');
       return;
     }
-
-    // Prepare payload matching backend schema:
-    // { name, email, address, password, role }
     const payload = {
       name: formData.name.trim(),
       email: formData.email.trim(),
@@ -82,7 +73,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
     dispatch(registerUser(payload));
   };
 
-  // Helper boolean to check if confirm password has input and whether it matches
   const hasConfirmInput = formData.confirmPassword.length > 0;
   const isPasswordMatching =
     hasConfirmInput && formData.password === formData.confirmPassword;
@@ -92,16 +82,11 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950">
       <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100/10 overflow-hidden backdrop-blur-xl animate-in fade-in duration-300">
-
-        {/* Header Banner */}
         <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 p-3 sm:p-3 text-white relative">
-
           <h2 className="text-2xl font-extrabold text-white mt-2">Create your account</h2>
         </div>
 
-        {/* Form Body */}
         <div className="p-6 sm:p-8">
-          {/* Error Banner */}
           {(error || validationError) && (
             <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2.5 animate-in slide-in-from-top-2">
               <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
@@ -111,8 +96,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
               </div>
             </div>
           )}
-
-          {/* Success Banner */}
           {successMessage && (
             <div className="mb-5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-start gap-2.5 animate-in slide-in-from-top-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -124,7 +107,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Full Name <span className="text-rose-500">*</span>
@@ -142,8 +124,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
                 />
               </div>
             </div>
-
-            {/* Email Address */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Email Address <span className="text-rose-500">*</span>
@@ -161,8 +141,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
                 />
               </div>
             </div>
-
-            {/* Address */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Address / City <span className="text-rose-500">*</span>
@@ -180,8 +158,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
                 />
               </div>
             </div>
-
-            {/* Password */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Password <span className="text-rose-500">*</span>
@@ -208,8 +184,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
                 </button>
               </div>
             </div>
-
-            {/* Compare / Confirm Password Field */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Confirm Password <span className="text-rose-500">*</span>
@@ -258,8 +232,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
                 </div>
               )}
             </div>
-
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading || isPasswordMismatch}
@@ -278,8 +250,6 @@ export default function Registration({ onSwitchToLogin, onRegisterSuccess }) {
               )}
             </button>
           </form>
-
-          {/* Switch to Login */}
           <div className="mt-6 pt-5 border-t border-slate-100 text-center">
             <p className="text-xs text-slate-500">
               Already have an account?{' '}

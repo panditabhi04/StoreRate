@@ -1,9 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
-  import.meta.env.VITE_API_BASE_URL ||
-  'http://localhost:3000/api';
+import { API_BASE_URL } from '../config/api';
 
 // Helper to get auth headers with Bearer token
 const getAuthHeaders = (getState) => {
@@ -54,13 +50,9 @@ const saveUserRatingsToStorage = (userRatings, state) => {
     const userId = user?.id || user?.email || 'current';
     localStorage.setItem(`storerate_user_ratings_${userId}`, JSON.stringify(userRatings));
   } catch {
-    // Ignore storage quota errors
+
   }
 };
-
-// 1. Async Thunk: Submit New Rating
-// Target endpoint: POST http://localhost:3000/api/rating
-// Body: { "store_id": 17, "rating": 5 }
 export const submitRating = createAsyncThunk(
   'ratings/submitRating',
   async ({ store_id, rating }, { getState, rejectWithValue }) => {
@@ -103,9 +95,6 @@ export const submitRating = createAsyncThunk(
   }
 );
 
-// 2. Async Thunk: Update Existing Rating
-// Target endpoint: PATCH http://localhost:3000/api/rating/:id
-// Body: { "rating": 4 }
 export const updateRating = createAsyncThunk(
   'ratings/updateRating',
   async ({ ratingId, store_id, rating }, { getState, rejectWithValue }) => {
@@ -147,8 +136,6 @@ export const updateRating = createAsyncThunk(
   }
 );
 
-// 3. Async Thunk: Fetch Ratings List
-// Target endpoint: GET http://localhost:3000/api/rating
 export const fetchUserRatings = createAsyncThunk(
   'ratings/fetchUserRatings',
   async (_, { getState, rejectWithValue }) => {
@@ -182,7 +169,7 @@ export const fetchUserRatings = createAsyncThunk(
 
 const initialState = {
   ratingsList: [],
-  userRatings: getSavedUserRatings(), // keyed by store_id: { [store_id]: { id, rating, store_id } }
+  userRatings: getSavedUserRatings(), 
   isSubmitting: false,
   isLoading: false,
   error: null,
@@ -215,7 +202,6 @@ const ratingSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // --- Submit Rating Lifecycle (POST /api/rating) ---
     builder
       .addCase(submitRating.pending, (state) => {
         state.isSubmitting = true;
@@ -233,8 +219,6 @@ const ratingSlice = createSlice({
         state.isSubmitting = false;
         state.error = action.payload || 'Failed to submit rating';
       });
-
-    // --- Update Rating Lifecycle (PATCH /api/rating/:id) ---
     builder
       .addCase(updateRating.pending, (state) => {
         state.isSubmitting = true;
@@ -255,8 +239,6 @@ const ratingSlice = createSlice({
         state.isSubmitting = false;
         state.error = action.payload || 'Failed to update rating';
       });
-
-    // --- Fetch Ratings Lifecycle ---
     builder
       .addCase(fetchUserRatings.pending, (state) => {
         state.isLoading = true;
@@ -264,7 +246,6 @@ const ratingSlice = createSlice({
       .addCase(fetchUserRatings.fulfilled, (state, action) => {
         state.isLoading = false;
         state.ratingsList = action.payload;
-        // Merge API user ratings into userRatings map
         if (Array.isArray(action.payload)) {
           action.payload.forEach((item) => {
             if (item.store_id && item.rating) {

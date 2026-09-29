@@ -50,7 +50,6 @@ export default function Layout({
 
   return (
     <div className="h-screen w-full flex bg-slate-50 text-slate-900 font-sans antialiased overflow-hidden">
-      {/* 1. Global Left Sidebar (Static / Sticky with own vertical scrollbar) */}
       <Sidebar
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -64,8 +63,6 @@ export default function Layout({
         onOpenAddAdminUser={onOpenAddAdminUser}
         onOpenUpdatePassword={onOpenUpdatePassword}
       />
-
-      {/* 2. Main Content Wrapper: Static Top Header + Independent Scrollable Main Content */}
       <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden">
         <Header
           isOpen={isOpen}
@@ -76,18 +73,12 @@ export default function Layout({
           onAddStore={handleAddStoreAction}
           onOpenUpdatePassword={onOpenUpdatePassword}
         />
-
-        {/* Main page content area with its own vertical scroll */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
         </main>
-
-        {/* <Footer /> */}
       </div>
-
-      {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in">
           <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 text-center relative">
