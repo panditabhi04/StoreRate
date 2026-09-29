@@ -1,6 +1,5 @@
 export const allowRoles = (...allowedRoles) => {
     console.log("allowedRoles : ", allowedRoles);
-
     return (req, res, next) => {
         if (!req.user) {
             return res.status(401).json({
@@ -8,14 +7,12 @@ export const allowRoles = (...allowedRoles) => {
                 message: "Unauthorized"
             });
         }
-
         if (!allowedRoles.includes(req.user.role)) {
             return res.status(403).json({
                 success: false,
                 message: "Access denied"
             });
         }
-
         next();
     };
 };

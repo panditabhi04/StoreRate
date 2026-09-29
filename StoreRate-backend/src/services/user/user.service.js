@@ -7,8 +7,6 @@ export const createUserService = async ({
     password,
     address,
 }) => {
-
-    // Check email
     const [existingUsers] = await DbConnection.execute(
         `SELECT id
          FROM users
@@ -22,7 +20,6 @@ export const createUserService = async ({
         throw error;
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const [result] = await DbConnection.execute(
@@ -65,38 +62,27 @@ export const getUsersService = async ({
 
     const values = [];
 
-
-    // Name filter
     if (name) {
         query += ` AND name LIKE ?`;
         values.push(`%${name}%`);
     }
 
-
-    // Email filter
     if (email) {
         query += ` AND email LIKE ?`;
         values.push(`%${email}%`);
     }
 
-
-    // Address filter
     if (address) {
         query += ` AND address LIKE ?`;
         values.push(`%${address}%`);
     }
 
-
-    // Role filter
     if (role) {
         query += ` AND role = ?`;
         values.push(role);
     }
 
-
     query += ` ORDER BY id DESC`;
-
-
     const [users] = await DbConnection.execute(
         query,
         values
@@ -130,8 +116,6 @@ export const getUserByIdService = async (userId) => {
 };
 
 export const updateUserService = async (userId, data) => {
-
-    // Check user
     const [users] = await DbConnection.execute(
         `SELECT id
          FROM users
@@ -155,8 +139,6 @@ export const updateUserService = async (userId, data) => {
     }
 
     if (data.email !== undefined) {
-
-        // Check duplicate email
         const [existingUsers] = await DbConnection.execute(
             `SELECT id
              FROM users
@@ -194,28 +176,19 @@ export const updateUserService = async (userId, data) => {
         values.push(data.address);
     }
 
-
-
-
     if (fields.length === 0) {
         const error = new Error(
             "No fields provided for update"
         );
-
         error.statusCode = 400;
         throw error;
     }
-
-
     values.push(userId);
-
     await DbConnection.execute(
         `UPDATE users
          SET ${fields.join(", ")}
          WHERE id = ?`,
         values
     );
-
-
     return await getUserByIdService(userId);
 };

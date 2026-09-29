@@ -9,7 +9,6 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 console.log("Auth route");
-
 router.patch(
     "/change-password",
     authMiddleware,

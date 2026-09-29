@@ -31,7 +31,6 @@ export const createUserSchema = z.object({
    
 });
 
-
 export const updateUserSchema = z.object({
     name: z
         .string()

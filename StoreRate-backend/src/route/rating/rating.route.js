@@ -8,8 +8,6 @@ import { submitRating, updateRating } from "../../controller/stores/store.contro
 
 const router = express.Router();
 
-
-// Submit rating
 router.post(
     "/",
     authMiddleware,
@@ -17,8 +15,6 @@ router.post(
     submitRating
 );
 
-
-// Modify rating
 router.patch(
     "/:storeId",
     authMiddleware,

@@ -26,7 +26,6 @@ export const getDashboardService = async () => {
 
 export const getOwnerDashboardService = async (ownerId) => {
 
-    // Find owner's store
     const [stores] = await DbConnection.execute(
         `
         SELECT id, name
@@ -49,8 +48,6 @@ export const getOwnerDashboardService = async (ownerId) => {
 
     const store = stores[0];
 
-
-    // Get average rating
     const [ratingResult] = await DbConnection.execute(
         `
         SELECT
@@ -64,8 +61,6 @@ export const getOwnerDashboardService = async (ownerId) => {
         [store.id]
     );
 
-
-    // Get users who submitted ratings
     const [users] = await DbConnection.execute(
         `
         SELECT
@@ -82,7 +77,6 @@ export const getOwnerDashboardService = async (ownerId) => {
         `,
         [store.id]
     );
-
 
     return {
         store: {

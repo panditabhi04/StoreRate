@@ -1,10 +1,6 @@
 import { createStoreService, deleteStoreService, getStoreByIdService, getStoresService, searchStoresService, submitRatingService, updateStoreService, updateRatingService, getOwnerStoresService } from "../../services/stores/store.service.js";
 import { createStoreSchema, updateStoreSchema } from "../../validator/store.validator.js";
 
-// ==========================================
-// ADD STORE
-// ==========================================
-
 export const createStore = async (req, res) => {
 
     try {
@@ -40,11 +36,6 @@ export const createStore = async (req, res) => {
     }
 };
 
-
-// ==========================================
-// GET ALL STORES
-// ==========================================
-
 export const getStores = async (req, res) => {
 
     try {
@@ -67,11 +58,6 @@ export const getStores = async (req, res) => {
         });
     }
 };
-
-
-// ==========================================
-// GET STORE BY ID
-// ==========================================
 
 export const getStoreById = async (req, res) => {
 
@@ -97,11 +83,6 @@ export const getStoreById = async (req, res) => {
         });
     }
 };
-
-
-// ==========================================
-// UPDATE STORE
-// ==========================================
 
 export const updateStore = async (req, res) => {
 
@@ -141,11 +122,6 @@ export const updateStore = async (req, res) => {
     }
 };
 
-
-// ==========================================
-// DELETE STORE
-// ==========================================
-
 export const deleteStore = async (req, res) => {
 
     try {
@@ -172,8 +148,6 @@ export const deleteStore = async (req, res) => {
         });
     }
 };
-
-
 
 export const searchStores = async (req, res) => {
     try {
@@ -206,7 +180,6 @@ export const searchStores = async (req, res) => {
     }
 };
 
-// Submit Rating
 export const submitRating = async (req, res) => {
     try {
 
@@ -242,8 +215,6 @@ export const submitRating = async (req, res) => {
     }
 };
 
-
-// Modify Rating
 export const updateRating = async (req, res) => {
     try {
 
@@ -279,11 +250,6 @@ export const updateRating = async (req, res) => {
         });
     }
 };
-
-// ==========================================
-// GET OWNER'S STORES (STORE OWNER ONLY)
-// Store owner can see ONLY their store, not other stores
-// ==========================================
 
 export const getOwnerStores = async (req, res) => {
     try {

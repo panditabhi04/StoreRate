@@ -16,7 +16,6 @@ import { allowRoles } from "../../middleware/role.middleware.js";
 
 const router = express.Router();
 
-// Dedicated route for Store Owner: view ONLY their own store
 router.get(
     "/owner",
     authMiddleware,
@@ -31,9 +30,6 @@ router.get(
     getOwnerStores
 );
 
-// View stores:
-// - If logged-in user is an OWNER: automatically runs getOwnerStores (sees ONLY their store)
-// - If logged-in user is ADMIN or USER: runs existing getStores as before
 router.get(
     "/",
     authMiddleware,
@@ -56,7 +52,6 @@ router.get(
 
 router.get("/:id", authMiddleware, getStoreById);
 
-// Only ADMIN and OWNER can create
 router.post(
     "/",
     authMiddleware,
@@ -64,8 +59,6 @@ router.post(
     createStore
 );
 
-
-// Only ADMIN and OWNER can update
 router.patch(
     "/:id",
     authMiddleware,
@@ -73,7 +66,6 @@ router.patch(
     updateStore
 );
 
-// Submit rating
 router.post(
     "/",
     authMiddleware,
@@ -81,8 +73,6 @@ router.post(
     submitRating
 );
 
-
-// Modify submitted rating
 router.patch(
     "/:storeId",
     authMiddleware,
@@ -91,7 +81,6 @@ router.patch(
 
 );
 
-// Only ADMIN can delete
 router.delete(
     "/:id",
     authMiddleware,

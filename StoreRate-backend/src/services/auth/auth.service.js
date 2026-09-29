@@ -10,7 +10,6 @@ export const registerUserService = async (userData) => {
         address
     } = userData;
 
-    // Check email
     const [existingUser] = await DbConnection.execute(
         "SELECT id FROM users WHERE email = ?",
         [email]
@@ -22,10 +21,8 @@ export const registerUserService = async (userData) => {
         throw error;
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const [result] = await DbConnection.execute(
         `INSERT INTO users
         (name, email, password, address, role)
@@ -51,7 +48,6 @@ export const registerUserService = async (userData) => {
 export const loginUserService = async (email, password) => {
     console.log("email : ", email);
     console.log("password : ", password);
-
 
     const [users] = await DbConnection.execute(
         `SELECT id, name, email, password, address, role
@@ -120,8 +116,6 @@ export const changePasswordService = async (
     console.log("currentPassword serveries : ", currentPassword);
     console.log("newPasswordserives : ", newPassword);
 
-
-    // Get current password from database
     const [users] = await DbConnection.execute(
         `SELECT id, password
          FROM users
@@ -138,8 +132,6 @@ export const changePasswordService = async (
 
     const user = users[0];
 
-
-    // Check current password
     const isPasswordValid = await bcrypt.compare(
         currentPassword,
         user.password
@@ -154,8 +146,6 @@ export const changePasswordService = async (
         throw error;
     }
 
-
-    // Check if new password is same as old password
     const isSamePassword = await bcrypt.compare(
         newPassword,
         user.password
@@ -170,15 +160,11 @@ export const changePasswordService = async (
         throw error;
     }
 
-
-    // Hash new password
     const hashedPassword = await bcrypt.hash(
         newPassword,
         10
     );
 
-
-    // Update password
     await DbConnection.execute(
         `UPDATE users
          SET password = ?
@@ -188,7 +174,6 @@ export const changePasswordService = async (
             userId
         ]
     );
-
 
     return {
         message: "Password changed successfully"

@@ -16,8 +16,6 @@ router.get(
     allowRoles("ADMIN"),
     getDashboard
 );
-
-// Owner Dashboard
 router.get(
     "/owner",
     authMiddleware,

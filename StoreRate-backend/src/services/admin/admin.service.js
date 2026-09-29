@@ -1,4 +1,4 @@
-    import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import DbConnection from "../../config/db.js";
 
 export const createAdminService = async ({
@@ -8,7 +8,6 @@ export const createAdminService = async ({
     address,
     role = "ADMIN"
 }) => {
-    // Check if email is already registered
     const [existingUsers] = await DbConnection.execute(
         `SELECT id
          FROM users
@@ -22,10 +21,8 @@ export const createAdminService = async ({
         throw error;
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Force role to ADMIN
     const adminRole = "ADMIN";
 
     const [result] = await DbConnection.execute(
@@ -72,19 +69,16 @@ export const getAdminsService = async ({
 
     const values = [];
 
-    // Filter by role (default to ADMIN; if role is 'ALL', return all users)
     if (role && role !== "ALL") {
         query += ` AND role = ?`;
         values.push(role);
     }
 
-    // Optional general search
     if (search) {
         query += ` AND (name LIKE ? OR email LIKE ? OR address LIKE ?)`;
         values.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
 
-    // Specific filters
     if (name) {
         query += ` AND name LIKE ?`;
         values.push(`%${name}%`);
@@ -132,7 +126,6 @@ export const getAdminByIdService = async (adminId) => {
 };
 
 export const updateAdminService = async (adminId, data) => {
-    // Check if admin user exists
     const [existing] = await DbConnection.execute(
         `SELECT id
          FROM users
