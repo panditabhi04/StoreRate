@@ -1,6 +1,7 @@
 CREATE DATABASE store_rating_db;
 use store_rating_db;
 
+
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(60) NOT NULL,
@@ -107,44 +108,47 @@ VALUES
 INSERT INTO stores (name, email, address, owner_id)
 VALUES
 (
-    'ABC Super Market',
-    'abc@gamil.com',
+    'Bigmart Super Market',
+    'Bigmart@supermarket.com',
     'Kothrud, Pune, Maharashtra',
-    6
+    18
 ),
 (
-    'Fresh Mart Store',
-    'freshmart@gmail.com',
-    'Baner, Pune, Maharashtra',
-    6
+    'Dmart',
+    'dmart@gmail.com',
+    'Pune',
+    18
 ),
 (
-    'City Grocery Store',
-    'citygrocery@gmail.com',
-    'Viman Nagar, Pune, Maharashtra',
-    7
-    ),
+    'Pandit Stores',
+    'pandit@gmail.com',
+    'Pune',
+    18
+),
 (
-    'Bigmart Grocery Store',
-    'Bigmart@gmail.com',
-    'Viman Nagar, Pune, Maharashtra',
-    8
+    'Chitale Bandhu',
+    'chiteleb@gmail.com',
+    'Pune',
+    18
 );
 INSERT INTO ratings (user_id, store_id, rating)
 VALUES
-(3, 1, 5),
-(4, 1, 4),
-(5, 1, 5),
+(19, 17, 5),
+(20, 17, 4),
 
-(3, 2, 4),
-(4, 2, 3),
+(19, 18, 2),
+(20, 18, 5),
 
-(5, 3, 5),
-(3, 3, 4);
+(19, 19, 5),
+(20, 19, 4),
+
+(19, 20, 4);
 
 select * from users;
 select * from stores;
 select * from ratings;
+
+
 
 
 
